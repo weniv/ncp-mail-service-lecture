@@ -1,0 +1,15 @@
+[project]
+name = "fastapi-ncp-mailing"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    {name = "Sunryeo", email = "elma9700@gmail.com"},
+]
+dependencies = ["fastapi>=0.115.8", "uvicorn>=0.34.0", "sqlalchemy>=2.0.38"]
+requires-python = "==3.13.*"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[tool.pdm]
+distribution = false

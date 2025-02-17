@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+.venv/
+venv/
+
+# SQLite
+*.db
+sql_app.db
+
+# PDM
+.pdm-python
+__pypackages__/
+.pdm.toml
+pdm.lock
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Environment variables
+.env
