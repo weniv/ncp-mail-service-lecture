@@ -52,8 +52,14 @@ class PostService:
 
         if post is None:
             return None
+        
+        update_dict = {
+            key: value
+            for key, value in post_update.model_dump().items()
+            if value is not None
+        }
 
-        for key, value in post_update.model_dump().items():
+        for key, value in update_dict.items():
             setattr(post, key, value)
 
         self.db.commit()

@@ -8,14 +8,14 @@ class PostCreate(BaseModel):
     content: str
 
 class PostUpdate(BaseModel):
-    title: str
-    content: str
+    title: str | None = None
+    content: str | None = None
 
 class PostResponse(BaseModel):
     id: int
-    title: str
+    title: str | None
     author: str
-    content: str
+    content: str | None
     created_at: datetime
     
     class Config:
