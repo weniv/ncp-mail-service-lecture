@@ -10,7 +10,7 @@ class PostService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_post(self, post: PostCreate):
+    def create_post(self, post: PostCreate):
         created_post = Post(**post.model_dump())
 
         self.db.add(created_post)
@@ -19,7 +19,7 @@ class PostService:
 
         return created_post
 
-    async def get_posts(self):
+    def get_posts(self):
         """방법1"""
         query = (
             select(Post).
@@ -31,7 +31,7 @@ class PostService:
 
         return posts
     
-    async def get_post(self, post_id: int):
+    def get_post(self, post_id: int):
         """방법1"""
         query = (
             select(Post).
@@ -43,7 +43,7 @@ class PostService:
 
         return post
     
-    async def update_post(self, post_id: int, post_update: PostUpdate):
+    def update_post(self, post_id: int, post_update: PostUpdate):
         query = (
             select(Post).
             where(Post.id == post_id)
@@ -67,7 +67,7 @@ class PostService:
 
         return post
     
-    async def delete_post(self, post_id: int):
+    def delete_post(self, post_id: int):
         query = (
             select(Post).
             where(Post.id == post_id)

@@ -39,8 +39,8 @@ def init_db():
         summary="새 게시글 작성",
         description="새로운 게시글을 생성합니다.",
 )
-async def create_post(post: PostCreate, post_service: PostService = Depends(get_post_service)):
-    created_post = await post_service.create_post(post)
+def create_post(post: PostCreate, post_service: PostService = Depends(get_post_service)):
+    created_post = post_service.create_post(post)
 
     return created_post
 
@@ -63,8 +63,8 @@ async def create_post(post: PostCreate, post_service: PostService = Depends(get_
             }
         }
 )
-async def get_posts(post_service: PostService = Depends(get_post_service)):
-    posts = await post_service.get_posts()
+def get_posts(post_service: PostService = Depends(get_post_service)):
+    posts = post_service.get_posts()
 
     if posts is None:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
@@ -90,8 +90,8 @@ async def get_posts(post_service: PostService = Depends(get_post_service)):
             }
         }
 )
-async def get_post(post_id: int, post_service: PostService = Depends(get_post_service)):
-    post = await post_service.get_post(post_id)
+def get_post(post_id: int, post_service: PostService = Depends(get_post_service)):
+    post = post_service.get_post(post_id)
 
     if post is None:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
@@ -116,12 +116,12 @@ async def get_post(post_id: int, post_service: PostService = Depends(get_post_se
             }
         }
 )
-async def update_post(
+def update_post(
     post_id: int, 
     post_update: PostUpdate, 
     post_service: PostService = Depends(get_post_service)
 ):
-    post = await post_service.update_post(post_id, post_update)
+    post = post_service.update_post(post_id, post_update)
 
     if post is None:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
@@ -157,8 +157,8 @@ async def update_post(
         }
     }
 )
-async def delete_post(post_id: int, post_service: PostService = Depends(get_post_service)):
-    post = await post_service.delete_post(post_id)
+def delete_post(post_id: int, post_service: PostService = Depends(get_post_service)):
+    post = post_service.delete_post(post_id)
 
     if post is False:
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
