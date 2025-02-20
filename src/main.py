@@ -1,10 +1,7 @@
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy import select
-from app.database import Base, engine, get_db
-from app.models.post import Post
+from app.database import Base, engine
 from app.schemas.post import PostCreate, PostResponse, PostUpdate
-from sqlalchemy.orm import Session
 
 from app.services.post_service import PostService, get_post_service
 
