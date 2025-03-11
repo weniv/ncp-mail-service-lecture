@@ -2,9 +2,9 @@ from fastapi import Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.database import get_db
-from app.models.post import Post
-from app.schemas.post import PostCreate, PostUpdate
+from src.app.database import get_db
+from src.app.models.post import Post
+from src.app.schemas.post import PostCreate, PostUpdate
 
 class PostService:
     def __init__(self, db: Session):

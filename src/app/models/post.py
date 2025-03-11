@@ -1,12 +1,12 @@
 from sqlalchemy import Column, DateTime, Integer, String, func
 
-from app.database import Base
+from src.app.database import Base
 
 
 class Post(Base):
     __tablename__ = "posts"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     author = Column(String)
     title = Column(String, index=True)
     content = Column(String)

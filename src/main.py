@@ -1,9 +1,12 @@
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
-from app.database import Base, engine
-from app.schemas.post import PostCreate, PostResponse, PostUpdate
+from .app.apis import auth
+from .app.database import Base, engine
+from .app.schemas.post import PostCreate, PostResponse, PostUpdate
 
-from app.services.post_service import PostService, get_post_service
+from .app.schemas.user import UserCreate, UserResponse
+from .app.services.post_service import PostService, get_post_service
+from .app.services.user_service import UserService, get_user_service
 
 app = FastAPI(
     title="FastAPI NCP Mailing Service",
@@ -12,6 +15,8 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+app.include_router(auth.router, tags=["auth"])
 
 @app.get("/")
 def health_check():
@@ -161,3 +166,10 @@ def delete_post(post_id: int, post_service: PostService = Depends(get_post_servi
         raise HTTPException(status_code=404, detail="게시글을 찾을 수 없습니다.")
 
     return {"message": "게시글이 성공적으로 삭제되었습니다."}
+
+# 회원가입
+@app.post("/register", response_model=UserResponse)
+def register_user(user: UserCreate, user_service: UserService = Depends(get_user_service)):
+    created_user = user_service.create_user(user)
+
+    return created_user

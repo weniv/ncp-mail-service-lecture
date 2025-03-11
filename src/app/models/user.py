@@ -1,0 +1,14 @@
+from sqlalchemy import Boolean, Column, Integer, String
+from sqlalchemy.sql import func
+from sqlalchemy import DateTime
+
+from src.app.database import Base
+
+class User(Base):
+    __tablename__ = "users"
+    
+    id = Column(Integer, primary_key=True)
+    email = Column(String, unique=True, index=True)
+    username = Column(String, unique=True, index=True)
+    password = Column(String)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
