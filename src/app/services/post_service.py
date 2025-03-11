@@ -4,13 +4,16 @@ from sqlalchemy.orm import Session
 
 from src.app.database import get_db
 from src.app.models.post import Post
+from src.app.models.user import User
 from src.app.schemas.post import PostCreate, PostUpdate
 
 class PostService:
     def __init__(self, db: Session):
         self.db = db
-
-    def create_post(self, post: PostCreate):
+    """
+    게시글 생성
+    """
+    def create_post(self, post: PostCreate, user: User):
         created_post = Post(**post.model_dump())
 
         self.db.add(created_post)
@@ -19,6 +22,9 @@ class PostService:
 
         return created_post
 
+    """
+    전체 게시글 목록 조회
+    """
     def get_posts(self):
         """방법1"""
         query = (
@@ -31,6 +37,9 @@ class PostService:
 
         return posts
     
+    """
+    특정 게시글 조회
+    """
     def get_post(self, post_id: int):
         """방법1"""
         query = (
@@ -43,7 +52,11 @@ class PostService:
 
         return post
     
-    def update_post(self, post_id: int, post_update: PostUpdate):
+    """
+    게시글 수정
+    작성자만 수정 가능
+    """
+    def update_post(self, post_id: int, post_update: PostUpdate, user: User):
         query = (
             select(Post).
             where(Post.id == post_id)
@@ -51,6 +64,10 @@ class PostService:
         post = self.db.execute(query).scalar_one_or_none()
 
         if post is None:
+            return None
+        
+        # 작성자 확인
+        if post.author_id != user.id and not user.is_admin:
             return None
         
         update_dict = {
@@ -67,7 +84,11 @@ class PostService:
 
         return post
     
-    def delete_post(self, post_id: int):
+    """
+    게시글 삭제
+    작성자만 삭제 가능
+    """
+    def delete_post(self, post_id: int, user: User):
         query = (
             select(Post).
             where(Post.id == post_id)
@@ -75,6 +96,10 @@ class PostService:
         post = self.db.execute(query).scalar_one_or_none()
 
         if post is None:
+            return False
+        
+        # 작성자 확인
+        if post.author_id != user.id and not user.is_admin:
             return False
 
         self.db.delete(post)
