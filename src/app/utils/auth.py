@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 import time
 from typing import Optional
+import uuid
 
 from jose import jwt, JWTError
 
@@ -8,6 +9,7 @@ from jose import jwt, JWTError
 SECRET_KEY = "1234567890abcdefghijklmnopqrstuvwxyz"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 """
 JWT 액세스 토큰을 생성합니다.
@@ -15,14 +17,37 @@ JWT 액세스 토큰을 생성합니다.
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
     
-    # 만료 시간 설정
+    # 만료 시간 설정(30분)
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     
     # JWT 페이로드에 만료 시간 추가
-    to_encode.update({"exp": expire})
+    to_encode.update({
+        "exp": expire,
+        "jti": str(uuid.uuid4())  # 토큰 고유 ID 추가
+    })
+    
+    # JWT 토큰 생성
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+"""
+JWT refresh 토큰을 생성합니다.
+"""
+def create_refresh_token(data: dict) -> str:
+    to_encode = data.copy()
+    
+    # 만료 시간 설정(7일)
+    expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
+    
+    # JWT 페이로드에 만료 시간과 고유 ID 추가
+    to_encode.update({
+        "exp": expire,
+        "jti": str(uuid.uuid4()),  # 토큰 고유 ID 추가
+        "type": "refresh"  # 토큰 타입 명시
+    })
     
     # JWT 토큰 생성
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
