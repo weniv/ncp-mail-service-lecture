@@ -9,7 +9,7 @@ from src.app.models.user import User
 from src.app.schemas.auth import LoginRequest
 from src.app.services.token_service import TokenService
 from src.app.utils.security import verify_password
-from src.app.utils.auth import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, verify_token
+from src.app.utils.auth import create_access_token, ACCESS_TOKEN_EXPIRE_MINUTES, create_refresh_token, verify_token
 
 class AuthService:
     def __init__(self, db: Session):
@@ -53,8 +53,17 @@ class AuthService:
             expires_delta=access_token_expires
         )
         
+        # 리프레시 토큰 생성
+        refresh_token = create_refresh_token(
+            data=token_data
+        )
+        
+        # 리프레시 토큰을 Redis에 저장
+        TokenService.store_refresh_token(user.id, refresh_token)
+        
         return {
             "access_token": access_token,
+            "refresh_token": refresh_token,
             "token_type": "bearer"
         }
     
