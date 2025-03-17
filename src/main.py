@@ -1,6 +1,7 @@
 from fastapi import Depends, FastAPI
 
 from src.app.apis import post
+from src.app.core.redis_config import init_redis
 from .app.apis import auth
 from .app.database import Base, engine
 
@@ -14,6 +15,9 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+# Redis 초기화
+init_redis(app)
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(post.router, prefix="/posts", tags=["post"])

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+import time
 from typing import Optional
 
 from jose import jwt, JWTError
@@ -38,3 +39,22 @@ def verify_token(token: str) -> dict:
     except JWTError:
         # 토큰이 유효하지 않을 경우 None 반환
         return None
+    
+"""
+JWT 토큰의 남은 만료 시간을 초 단위로 계산
+"""
+def get_token_expiry(token: str) -> int:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options={"verify_signature": True})
+        exp = payload.get("exp")
+        
+        if exp:
+            # 현재 시간과 만료 시간의 차이 계산
+            remaining = exp - time.time()
+            # 최소 1초 이상 설정
+            return max(int(remaining), 1)
+    except:
+        pass
+    
+    # 기본값 (30분)
+    return ACCESS_TOKEN_EXPIRE_MINUTES * 60

@@ -1,8 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 
+from src.app.dependencies.auth import get_current_user
+from src.app.models.user import User
 from src.app.schemas.auth import Token, LoginRequest
 from src.app.services.auth_service import AuthService, get_auth_service
+from src.app.services.token_service import TokenService
+from src.app.utils.auth import get_token_expiry
 
 router = APIRouter()
 
@@ -58,3 +62,16 @@ def login_for_access_token(
     token_data = auth_service.create_user_token(user)
     
     return token_data
+
+"""
+사용자 로그아웃 - 현재 토큰을 블랙리스트에 추가
+"""
+@router.post("/logout")
+def logout(current_user: User = Depends(get_current_user)):
+    # 현재 토큰의 만료 시간 계산
+    token_expiry = get_token_expiry(current_user.token)
+    
+    # 토큰을 블랙리스트에 추가
+    TokenService.blacklist_token(current_user.token, token_expiry)
+    
+    return {"message": "로그아웃되었습니다."}
