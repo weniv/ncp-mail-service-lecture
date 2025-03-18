@@ -1,5 +1,5 @@
 from datetime import timedelta
-from app.core.redis_config import redis_client
+from src.app.core.redis_config import redis_client
 from src.app.utils.auth import REFRESH_TOKEN_EXPIRE_DAYS
 
 TOKEN_BLACKLIST_PREFIX = "blacklist:" # 토큰 블랙리스트 키 접두사

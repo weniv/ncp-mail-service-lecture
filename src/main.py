@@ -1,12 +1,12 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 
-from src.app.apis import post
-from src.app.core.redis_config import init_redis
+from .app.apis import post, user
+from .app.core.middlewares.cors import setup_cors
+from .app.core.middlewares.security import setup_security
+from .app.core.redis_config import init_redis
 from .app.apis import auth
 from .app.database import Base, engine
 
-from .app.schemas.user import UserCreate, UserResponse
-from .app.services.user_service import UserService, get_user_service
 
 app = FastAPI(
     title="FastAPI NCP Mailing Service",
@@ -16,11 +16,16 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# 미들웨어 설정
+setup_cors(app)
+setup_security(app)
+
 # Redis 초기화
 init_redis(app)
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(post.router, prefix="/posts", tags=["post"])
+app.include_router(user.router, tags=["user"])
 
 @app.get("/")
 def health_check():
@@ -40,9 +45,3 @@ def init_db():
 
 
 
-# 회원가입
-@app.post("/register", response_model=UserResponse)
-def register_user(user: UserCreate, user_service: UserService = Depends(get_user_service)):
-    created_user = user_service.create_user(user)
-
-    return created_user
