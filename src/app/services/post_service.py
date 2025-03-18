@@ -67,7 +67,7 @@ class PostService:
             return None
         
         # 작성자 확인
-        if post.author_id != user.id and not user.is_admin:
+        if post.author_id != user.id:
             return None
         
         update_dict = {
@@ -99,7 +99,7 @@ class PostService:
             return False
         
         # 작성자 확인
-        if post.author_id != user.id and not user.is_admin:
+        if post.author_id != user.id:
             return False
 
         self.db.delete(post)

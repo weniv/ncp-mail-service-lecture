@@ -41,7 +41,6 @@ class AuthService:
             "sub": user.username,
             "email": user.email,
             "user_id": user.id,
-            "is_admin": user.is_admin
         }
         
         # 만료 시간 설정
@@ -98,7 +97,6 @@ class AuthService:
             "sub": user.username,
             "email": user.email,
             "user_id": user.id,
-            "is_admin": user.is_admin
         }
         
         # 새 액세스 토큰 생성
