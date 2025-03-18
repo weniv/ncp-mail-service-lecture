@@ -1,10 +1,9 @@
 from fastapi import FastAPI
 
-from .app.apis import post, user
+from .app.apis import post, user, auth
 from .app.core.middlewares.cors import setup_cors
 from .app.core.middlewares.security import setup_security
 from .app.core.redis_config import init_redis
-from .app.apis import auth
 from .app.database import Base, engine
 
 
